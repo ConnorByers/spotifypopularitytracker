@@ -15,13 +15,11 @@ class AlbumPopularityEvent(db.Model):
     __tablename__ = 'PopularityEvent'
     id = db.Column(db.Integer, primary_key=True)
     albumId = db.Column(db.String(50))
-    albumName = db.Column(db.String(75))
     albumPopularity = db.Column(db.Integer)
     date = db.Column(db.String(50))
 
-    def __init__(self, albumId, albumName, albumPopularity, date):
+    def __init__(self, albumId, albumPopularity, date):
         self.albumId = albumId
-        self.albumName = albumName
         self.albumPopularity = albumPopularity
         self.date = date
 
@@ -31,18 +29,20 @@ class AlbumArtistMapping(db.Model):
     albumId = db.Column(db.String(50))
     artistId = db.Column(db.String(50))
     artistName = db.Column(db.String(50))
+    albumName = db.Column(db.String(75))
 
-    def __init__(self, albumId, artistId, artistName):
+    def __init__(self, albumId, artistId, artistName, albumName):
         self.albumId = albumId
         self.artistId = artistId
         self.artistName = artistName
+        self.albumName = albumName
 
 @app.route('/add_album_popularities', methods=['POST'])
 def addAlbumPopularities():
     if(request.method == 'POST'):
         dataArray = request.get_json()['data']
         for albumObj in dataArray:
-            row = AlbumPopularityEvent(albumObj['id'], albumObj['name'], albumObj['popularity'], albumObj['date'])
+            row = AlbumPopularityEvent(albumObj['id'], albumObj['popularity'], albumObj['date'])
             db.session.add(row)
         db.session.commit()
     return('GOOD')
@@ -53,7 +53,7 @@ def updateAlbumArtistMap():
         dataArray = request.get_json()['data']
         db.session.query(AlbumArtistMapping).delete()
         for albumArtistMapObj in dataArray:
-            row = AlbumArtistMapping(albumArtistMapObj['albumId'], albumArtistMapObj['artistId'], albumArtistMapObj['artistName'])
+            row = AlbumArtistMapping(albumArtistMapObj['albumId'], albumArtistMapObj['artistId'], albumArtistMapObj['artistName'], albumArtistMapObj['albumName'])
             db.session.add(row)
         db.session.commit()
         return('GOOD')
@@ -68,9 +68,20 @@ def getAllAlbumData():
         allArtistIds = list(artistsMapDict.keys())
         returnObj = {}
         for artistId in allArtistIds:
-            returnObj[artistId] = {"artistName": artistsMapDict[artistId], "popularities": []}
+            returnObj[artistId] = {"artistName": artistsMapDict[artistId], 'albumIds': {}}
+            artistAlbumIds = []
+            for artistMap in artistsMapArr:
+                if(artistId == artistMap.artistId):
+                    artistAlbumIds.append(artistMap.albumId)
+            print(artistAlbumIds)
+
+            artistAlbumIds = list(dict.fromkeys(artistAlbumIds)) # elim duplicate entries
+            for albumId in artistAlbumIds:
+                returnObj[artistId]['albumIds'][albumId] = {"albumName": False, "popularities": []}
         res = db.session.query(AlbumPopularityEvent, AlbumArtistMapping).join(AlbumArtistMapping, AlbumPopularityEvent.albumId == AlbumArtistMapping.albumId).all()
         for event, mapping in res:
-            returnObj[mapping.artistId]["popularities"].append({"popularity": event.albumPopularity, "date": event.date, "album": event.albumName})
+            if(returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] == False):
+                returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] = mapping.albumName
+            returnObj[mapping.artistId]['albumIds'][event.albumId]['popularities'].append({"popularity": event.albumPopularity, "date": event.date})
         
         return(returnObj)
