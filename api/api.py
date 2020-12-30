@@ -1,7 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 import time
 from flask_sqlalchemy import SQLAlchemy
-from secrets import database_uri
+from secrets import database_uri, api_access_secret
 
 app = Flask(__name__)
 
@@ -40,48 +40,59 @@ class AlbumArtistMapping(db.Model):
 @app.route('/add_album_popularities', methods=['POST'])
 def addAlbumPopularities():
     if(request.method == 'POST'):
-        dataArray = request.get_json()['data']
-        for albumObj in dataArray:
-            row = AlbumPopularityEvent(albumObj['id'], albumObj['popularity'], albumObj['date'])
-            db.session.add(row)
-        db.session.commit()
-    return('GOOD')
+        if(request.get_json()['api_access_secret'] == api_access_secret):
+            dataArray = request.get_json()['data']
+            for albumObj in dataArray:
+                row = AlbumPopularityEvent(albumObj['id'], albumObj['popularity'], albumObj['date'])
+                db.session.add(row)
+            db.session.commit()
+            return(Response("{'message':'SUCCESS'}", status=200, mimetype='application/json'))
+        else:
+            return(Response("{'message':'INCORRECT API ACCESS SECRET'}", status=401, mimetype='application/json'))
+
+    
     
 @app.route('/update_album_artist_map', methods=['POST'])
 def updateAlbumArtistMap():
     if(request.method == 'POST'):
-        dataArray = request.get_json()['data']
-        db.session.query(AlbumArtistMapping).delete()
-        for albumArtistMapObj in dataArray:
-            row = AlbumArtistMapping(albumArtistMapObj['albumId'], albumArtistMapObj['artistId'], albumArtistMapObj['artistName'], albumArtistMapObj['albumName'])
-            db.session.add(row)
-        db.session.commit()
-        return('GOOD')
+        if(request.get_json()['api_access_secret'] == api_access_secret):
+            dataArray = request.get_json()['data']
+            db.session.query(AlbumArtistMapping).delete()
+            for albumArtistMapObj in dataArray:
+                row = AlbumArtistMapping(albumArtistMapObj['albumId'], albumArtistMapObj['artistId'], albumArtistMapObj['artistName'], albumArtistMapObj['albumName'])
+                db.session.add(row)
+            db.session.commit()
+            return(Response("{'message':'SUCCESS'}", status=200, mimetype='application/json'))
+        else:
+            return(Response("{'message':'INCORRECT API ACCESS SECRET'}", status=401, mimetype='application/json'))
 
 @app.route('/get_all_album_data', methods=['GET'])
 def getAllAlbumData():
     if(request.method == 'GET'):
-        artistsMapArr = db.session.query(AlbumArtistMapping).all()
-        artistsMapDict = {}
-        for artistMap in artistsMapArr:
-            artistsMapDict[artistMap.artistId] = artistMap.artistName
-        allArtistIds = list(artistsMapDict.keys())
-        returnObj = {}
-        for artistId in allArtistIds:
-            returnObj[artistId] = {"artistName": artistsMapDict[artistId], 'albumIds': {}}
-            artistAlbumIds = []
+        if(request.get_json()['api_access_secret'] == api_access_secret):
+            artistsMapArr = db.session.query(AlbumArtistMapping).all()
+            artistsMapDict = {}
             for artistMap in artistsMapArr:
-                if(artistId == artistMap.artistId):
-                    artistAlbumIds.append(artistMap.albumId)
-            print(artistAlbumIds)
+                artistsMapDict[artistMap.artistId] = artistMap.artistName
+            allArtistIds = list(artistsMapDict.keys())
+            returnObj = {}
+            for artistId in allArtistIds:
+                returnObj[artistId] = {"artistName": artistsMapDict[artistId], 'albumIds': {}}
+                artistAlbumIds = []
+                for artistMap in artistsMapArr:
+                    if(artistId == artistMap.artistId):
+                        artistAlbumIds.append(artistMap.albumId)
+                print(artistAlbumIds)
 
-            artistAlbumIds = list(dict.fromkeys(artistAlbumIds)) # elim duplicate entries
-            for albumId in artistAlbumIds:
-                returnObj[artistId]['albumIds'][albumId] = {"albumName": False, "popularities": []}
-        res = db.session.query(AlbumPopularityEvent, AlbumArtistMapping).join(AlbumArtistMapping, AlbumPopularityEvent.albumId == AlbumArtistMapping.albumId).all()
-        for event, mapping in res:
-            if(returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] == False):
-                returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] = mapping.albumName
-            returnObj[mapping.artistId]['albumIds'][event.albumId]['popularities'].append({"popularity": event.albumPopularity, "date": event.date})
-        
-        return(returnObj)
+                artistAlbumIds = list(dict.fromkeys(artistAlbumIds)) # elim duplicate entries
+                for albumId in artistAlbumIds:
+                    returnObj[artistId]['albumIds'][albumId] = {"albumName": False, "popularities": []}
+            res = db.session.query(AlbumPopularityEvent, AlbumArtistMapping).join(AlbumArtistMapping, AlbumPopularityEvent.albumId == AlbumArtistMapping.albumId).all()
+            for event, mapping in res:
+                if(returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] == False):
+                    returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] = mapping.albumName
+                returnObj[mapping.artistId]['albumIds'][event.albumId]['popularities'].append({"popularity": event.albumPopularity, "date": event.date})
+            
+            return(returnObj)
+        else:
+            return(Response("{'message':'INCORRECT API ACCESS SECRET'}", status=401, mimetype='application/json'))
