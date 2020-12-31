@@ -21,7 +21,7 @@ export default class Graph extends Component {
             <ResponsiveContainer aspect={1.6} >
                 <LineChart key={this.props.key}>
                   <CartesianGrid strokeDasharray="3 3"/>
-                  <XAxis dataKey="date" style={{fontSize: '1rem',fontFamily: 'Times New Roman'}}/>
+                  <XAxis dataKey="date" style={{fontSize: '1rem',fontFamily: 'Times New Roman'}} allowDuplicatedCategory={false}/>
                   <YAxis dataKey="popularity" style={{fontSize: '1rem',fontFamily: 'Times New Roman'}} domain={[0, 100]}>
                     <Label angle={-90} value='Popularity on Spotify' position='insideLeft' style={{textAnchor: 'middle', fontSize: '1.2rem',fontFamily: 'Times New Roman'}} />
                   </YAxis>

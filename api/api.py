@@ -69,7 +69,7 @@ def updateAlbumArtistMap():
 @app.route('/get_all_album_data', methods=['GET'])
 def getAllAlbumData():
     if(request.method == 'GET'):
-        if(request.get_json()['api_access_secret'] == api_access_secret):
+        if(request.headers['api_access_secret'] == api_access_secret):
             artistsMapArr = db.session.query(AlbumArtistMapping).all()
             artistsMapDict = {}
             for artistMap in artistsMapArr:
@@ -82,7 +82,6 @@ def getAllAlbumData():
                 for artistMap in artistsMapArr:
                     if(artistId == artistMap.artistId):
                         artistAlbumIds.append(artistMap.albumId)
-                print(artistAlbumIds)
 
                 artistAlbumIds = list(dict.fromkeys(artistAlbumIds)) # elim duplicate entries
                 for albumId in artistAlbumIds:
