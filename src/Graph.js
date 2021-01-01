@@ -8,13 +8,18 @@ export default class Graph extends Component {
         const newSeries = Object.keys(this.props.allPopularities).map(key=>(
             {
               albumName: this.props.allPopularities[key].albumName,
-              data: this.props.allPopularities[key].popularities.map((popularityObj)=>({
-                date: Date.parse(popularityObj.date.replace(/\//g, '-')),
-                popularity: popularityObj.popularity
-              })),
+              data: this.props.allPopularities[key].popularities.map((popularityObj)=>{
+                let dateWTimezone = new Date(popularityObj.date.replace(/\//g, '-'));
+                const userTimezoneOffset = dateWTimezone.getTimezoneOffset() * 60000;
+                const dateWOTimezone = new Date(dateWTimezone.getTime() - userTimezoneOffset);
+                return {
+                  date: dateWOTimezone.getTime(),
+                  popularity: popularityObj.popularity}
+              }).sort((a,b)=>a.date - b.date),
               albumId: key
             }
           ))
+          
           const strokeColours = ['#332288', '#88CCEE', '#44AA99', '#117733', '#999933', '#DDCC77', '#CC6677', '#882255', '#AA4499']
           const legendTextCSSFunction = (value, entry) => {
             
@@ -22,7 +27,9 @@ export default class Graph extends Component {
           };
 
           const formatXAxis = (timeInMilli) => {
-            var date = new Date(timeInMilli);
+            let date = new Date(timeInMilli);
+            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+            date = new Date(date.getTime() - userTimezoneOffset);
             return date.getFullYear() + '/' + String(date.getMonth() + 1).padStart(2, '0') + '/' + String(date.getDate()).padStart(2, '0')
           }
 
@@ -30,7 +37,7 @@ export default class Graph extends Component {
             <ResponsiveContainer aspect={1.6} >
                 <LineChart key={this.props.key}>
                   <CartesianGrid strokeDasharray="3 3"/>
-                  <XAxis dataKey="date" style={{fontSize: '1rem',fontFamily: 'Times New Roman'}} type="number" tickFormatter={formatXAxis} domain={['dataMin', 'dataMax']}/>
+                  <XAxis scale="time" dataKey="date" style={{fontSize: '1rem',fontFamily: 'Times New Roman'}} type="number" tickFormatter={formatXAxis} domain={['dataMin', 'dataMax']}/>
                   <YAxis dataKey="popularity" style={{fontSize: '1rem',fontFamily: 'Times New Roman'}} domain={[0, 100]}>
                     <Label angle={-90} value='Popularity on Spotify' position='insideLeft' style={{textAnchor: 'middle', fontSize: '1.2rem',fontFamily: 'Times New Roman'}} />
                   </YAxis>
