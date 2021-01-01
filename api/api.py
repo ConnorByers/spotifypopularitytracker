@@ -69,29 +69,27 @@ def updateAlbumArtistMap():
 @app.route('/get_all_album_data', methods=['GET'])
 def getAllAlbumData():
     if(request.method == 'GET'):
-        if(request.headers['api_access_secret'] == api_access_secret):
-            artistsMapArr = db.session.query(AlbumArtistMapping).all()
-            artistsMapDict = {}
+        artistsMapArr = db.session.query(AlbumArtistMapping).all()
+        artistsMapDict = {}
+        for artistMap in artistsMapArr:
+            artistsMapDict[artistMap.artistId] = artistMap.artistName
+        allArtistIds = list(artistsMapDict.keys())
+        returnObj = {}
+        for artistId in allArtistIds:
+            returnObj[artistId] = {"artistName": artistsMapDict[artistId], 'albumIds': {}}
+            artistAlbumIds = []
             for artistMap in artistsMapArr:
-                artistsMapDict[artistMap.artistId] = artistMap.artistName
-            allArtistIds = list(artistsMapDict.keys())
-            returnObj = {}
-            for artistId in allArtistIds:
-                returnObj[artistId] = {"artistName": artistsMapDict[artistId], 'albumIds': {}}
-                artistAlbumIds = []
-                for artistMap in artistsMapArr:
-                    if(artistId == artistMap.artistId):
-                        artistAlbumIds.append(artistMap.albumId)
+                if(artistId == artistMap.artistId):
+                    artistAlbumIds.append(artistMap.albumId)
 
-                artistAlbumIds = list(dict.fromkeys(artistAlbumIds)) # elim duplicate entries
-                for albumId in artistAlbumIds:
-                    returnObj[artistId]['albumIds'][albumId] = {"albumName": False, "popularities": []}
-            res = db.session.query(AlbumPopularityEvent, AlbumArtistMapping).join(AlbumArtistMapping, AlbumPopularityEvent.albumId == AlbumArtistMapping.albumId).all()
-            for event, mapping in res:
-                if(returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] == False):
-                    returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] = mapping.albumName
-                returnObj[mapping.artistId]['albumIds'][event.albumId]['popularities'].append({"popularity": event.albumPopularity, "date": event.date})
+            artistAlbumIds = list(dict.fromkeys(artistAlbumIds)) # elim duplicate entries
+            for albumId in artistAlbumIds:
+                returnObj[artistId]['albumIds'][albumId] = {"albumName": False, "popularities": []}
+        res = db.session.query(AlbumPopularityEvent, AlbumArtistMapping).join(AlbumArtistMapping, AlbumPopularityEvent.albumId == AlbumArtistMapping.albumId).all()
+        for event, mapping in res:
+            if(returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] == False):
+                returnObj[mapping.artistId]['albumIds'][event.albumId]['albumName'] = mapping.albumName
+            returnObj[mapping.artistId]['albumIds'][event.albumId]['popularities'].append({"popularity": event.albumPopularity, "date": event.date})
             
-            return(returnObj)
-        else:
-            return(Response("{'message':'INCORRECT API ACCESS SECRET'}", status=401, mimetype='application/json'))
+        return(returnObj)
+

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { api_access_secret } from './secret';
 import Graph from './Graph';
 import NavBar from './NavBar';
 import styled from 'styled-components'
@@ -10,7 +9,7 @@ export default class App extends Component {
     this.state = { allArtistAlbumPopularities: [] }
   }
   componentDidMount(){
-    axios.get('/get_all_album_data', {headers: {api_access_secret}})
+    axios.get('/get_all_album_data')
       .then((res)=>{
         this.setState({
           allArtistAlbumPopularities: res.data

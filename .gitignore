@@ -26,3 +26,5 @@ yarn-error.log*
 /api/secrets.py
 
 secret.js
+
+/.eslintcache
