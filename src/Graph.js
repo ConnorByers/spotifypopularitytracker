@@ -11,7 +11,8 @@ export default class Graph extends Component {
               data: this.props.allPopularities[key].popularities.map((popularityObj)=>{
                 let dateWTimezone = new Date(popularityObj.date.replace(/\//g, '-'));
                 const userTimezoneOffset = dateWTimezone.getTimezoneOffset() * 60000;
-                const dateWOTimezone = new Date(dateWTimezone.getTime() - userTimezoneOffset);
+                const dateWOTimezone = new Date(dateWTimezone.getTime() + userTimezoneOffset);
+
                 return {
                   date: dateWOTimezone.getTime(),
                   popularity: popularityObj.popularity}
@@ -29,7 +30,7 @@ export default class Graph extends Component {
           const formatXAxis = (timeInMilli) => {
             let date = new Date(timeInMilli);
             const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-            date = new Date(date.getTime() - userTimezoneOffset);
+            date = new Date(date.getTime() + userTimezoneOffset);
             return date.getFullYear() + '/' + String(date.getMonth() + 1).padStart(2, '0') + '/' + String(date.getDate()).padStart(2, '0')
           }
 
