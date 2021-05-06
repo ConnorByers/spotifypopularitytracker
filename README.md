@@ -14,7 +14,7 @@ Built using React, Recharts, Flask, PostgreSQL and Spotify API.
 6. `pip install -r packages.txt`
 7. `python`
 8. `from app import db`
-9. `db.create_all()
+9. `db.create_all()`
 10. `exit()`
 11. `python -m flask run`
 12. Open a new terminal in the main directory
