@@ -1,70 +1,32 @@
-# Getting Started with Create React App
+# Spotify Popularity Tracker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Tracks the popularity of a set of artists' albums over time and displays the data in graphs
 
-## Available Scripts
+Built using React, Recharts, Flask, PostgreSQL and Spotify API.
 
-In the project directory, you can run:
+Deployed using Heroku.
 
-### `yarn start`
+Currently hosted on https://spotifypopularitytracker.herokuapp.com/ - Might take some time for page to load if website hasn't been accessed in a long time due to me having a free tier Heroku account.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## How to run
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. `npm i`
+2. `cd ./api`
+3. Create `secrets.py`
+4. In said file, define `database_uri` (from your db) and `api_access_secret` (api access secret which should match the value you set in script.js)
+5. Create a virtual environmnent for Python ( I used Python 3.8 for this project )
+6. `pip install -r packages.txt`
+7. `python`
+8. `from app import db`
+9. `db.create_all()`
+10. `exit()`
+11. `python -m flask run`
+12. Open a new terminal in the main directory
+13. `npm run start`
+14. In `./script.js` set `spotifyAuthorization` to your Spotify API Access Key (Should start with Basic <some text here>) and `api_access_secret` to the value you set in `secrets.py`.
+15. Add `node <Path to script.js file>` to a CRON job which runs once everyday (Make sure your backend is running at this time). You can also run this manually.
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Next Steps
+- Add something to use/analyze the data we create
+- Code a solution to the inevitable time where the amount of data will be too high for one network request. One solution could be to seperate the artists in their own page and network request.
+- Add a way for a user to add an artist to track
