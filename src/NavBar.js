@@ -4,16 +4,12 @@ import styled from 'styled-components';
 export default class NavBar extends Component {
     render() {
         const Bar = styled.p`
-            font-family: roboto, sans-serif;
-            font-size: 4rem;
+            font-size: 3rem;
             width: 100%;
-            background-color: #85bdde;
+            background-color: black;
             color: white;
             text-align: center;
-            margin: 0 auto;
-            padding: 2rem 0;
-            border: 3px solid #6089a1;
-            border-style: none none solid none;
+            margin: 2rem auto;
         `;
         return (
             <Bar>

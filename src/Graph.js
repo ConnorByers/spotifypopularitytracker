@@ -21,7 +21,7 @@ export default class Graph extends Component {
             }
           ))
           
-          const strokeColours = ['#FFFF00', '#FF0000', '#00FF00', '#00FFFF', '#FF00FF', '#9D00FF', '#0033FF', '#FF0099', '#FF6600']
+          const strokeColours = ['#FFFF00', '#FF0000', '#FF0099','#00FF00', '#9D00FF',  '#00FFFF', '#FF00FF', '#0033FF',  '#FF6600']
           const legendTextCSSFunction = (value, entry) => {
             
             return <span style={{ fontSize: '1.2rem',fontFamily: 'Roboto', color: 'white'}}>{value}</span>;
@@ -40,7 +40,7 @@ export default class Graph extends Component {
                   <CartesianGrid strokeDasharray="3 3" fill="black" stroke="white"/>
                   <XAxis scale="time" dataKey="date" style={{fontSize: '1rem',fontFamily: 'Roboto', color: 'white'}} stroke="white" type="number" tickFormatter={formatXAxis} domain={['dataMin', 'dataMax']}/>
                   <YAxis dataKey="popularity" style={{fontSize: '1rem',fontFamily: 'Roboto'}} domain={[0, 100]} stroke="white">
-                    <Label angle={-90} value='Popularity on Spotify' position='insideLeft' style={{textAnchor: 'middle', fontSize: '20px', fontFamily: 'Roboto', color: 'white', fontWeight: '100', letterSpacing: '5px'}} stroke="white" fill="white" />
+                    <Label angle={-90} value='Popularity on Spotify' position='insideLeft' style={{textAnchor: 'middle', fontSize: '16px', fontFamily: 'Roboto', color: 'white', fontWeight: '100', letterSpacing: '3px'}} stroke="white" fill="white" />
                   </YAxis>
                   <Legend formatter={legendTextCSSFunction} stroke="white" fill="white" />
                   {newSeries.map((s, idx) => (

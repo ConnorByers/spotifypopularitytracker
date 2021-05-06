@@ -18,25 +18,31 @@ export default class App extends Component {
         })
       });
   }
-  goToTop(){
-    window.scrollTo(0,0);
-  }
+
   render() {  
     const Container = styled.div`
           -webkit-box-sizing: border-box;
           -moz-box-sizing: border-box;
           box-sizing: border-box;
-          padding: 5% 30%;
           background-color: black;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
         `;  
     const Roboabad = styled.div`
           display: grid;
           grid-template-columns: 100%;
           padding: 0 0 5% 0 ;
-          border: 1px solid #000;
-          border-radius: 0.5rem;
-          margin: 0 0 5% 0;
+          width: 1000px;
           background-color: black;
+          @media (max-width: 1300px) {
+              width: 600px;
+          }
+
+          @media (max-width: 800px) {
+              width: 90%;
+          }
         `;
     const GraphTitle = styled.p`
       text-align: center;
@@ -50,6 +56,7 @@ export default class App extends Component {
     `;
     return (
       <Container>
+        <NavBar />
         {
         Object.keys(this.state.allArtistAlbumPopularities).map((key)=>{
             const artistName = this.state.allArtistAlbumPopularities[key]['artistName']
