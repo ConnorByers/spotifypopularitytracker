@@ -13,7 +13,7 @@ Currently hosted on https://spotifypopularitytracker.herokuapp.com/ - Might take
 1. `npm i`
 2. `cd ./api`
 3. Create `secrets.py`
-4. In said file, define `database_uri` (from your db) and `api_access_secret` (Spotify API access secret)
+4. In said file, define `database_uri` (from your db) and `api_access_secret` (api access secret which should match the value you set in script.js)
 5. Create a virtual environmnent for Python ( I used Python 3.8 for this project )
 6. `pip install -r packages.txt`
 7. `python`
@@ -23,6 +23,8 @@ Currently hosted on https://spotifypopularitytracker.herokuapp.com/ - Might take
 11. `python -m flask run`
 12. Open a new terminal in the main directory
 13. `npm run start`
+14. In `./script.js` set `spotifyAuthorization` to your Spotify API Access Key (Should start with Basic <some text here>) and `api_access_secret` to the value you set in `secrets.py`.
+15. Add `node <Path to script.js file>` to a CRON job which runs once everyday (Make sure your backend is running at this time). You can also run this manually.
 
 ## Next Steps
 - Add something to use/analyze the data we create
