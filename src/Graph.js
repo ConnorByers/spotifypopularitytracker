@@ -21,10 +21,10 @@ export default class Graph extends Component {
             }
           ))
           
-          const strokeColours = ['#332288', '#88CCEE', '#44AA99', '#117733', '#999933', '#DDCC77', '#CC6677', '#882255', '#AA4499']
+          const strokeColours = ['#FFFF00', '#FF0000', '#00FF00', '#00FFFF', '#FF00FF', '#9D00FF', '#0033FF', '#FF0099', '#FF6600']
           const legendTextCSSFunction = (value, entry) => {
             
-            return <span style={{ fontSize: '1.2rem',fontFamily: 'Times New Roman' }}>{value}</span>;
+            return <span style={{ fontSize: '1.2rem',fontFamily: 'Roboto', color: 'white'}}>{value}</span>;
           };
 
           const formatXAxis = (timeInMilli) => {
@@ -37,12 +37,12 @@ export default class Graph extends Component {
           return (
             <ResponsiveContainer aspect={1.6} >
                 <LineChart key={this.props.key}>
-                  <CartesianGrid strokeDasharray="3 3"/>
-                  <XAxis scale="time" dataKey="date" style={{fontSize: '1rem',fontFamily: 'Times New Roman'}} type="number" tickFormatter={formatXAxis} domain={['dataMin', 'dataMax']}/>
-                  <YAxis dataKey="popularity" style={{fontSize: '1rem',fontFamily: 'Times New Roman'}} domain={[0, 100]}>
-                    <Label angle={-90} value='Popularity on Spotify' position='insideLeft' style={{textAnchor: 'middle', fontSize: '1.2rem',fontFamily: 'Times New Roman'}} />
+                  <CartesianGrid strokeDasharray="3 3" fill="black" stroke="white"/>
+                  <XAxis scale="time" dataKey="date" style={{fontSize: '1rem',fontFamily: 'Roboto', color: 'white'}} stroke="white" type="number" tickFormatter={formatXAxis} domain={['dataMin', 'dataMax']}/>
+                  <YAxis dataKey="popularity" style={{fontSize: '1rem',fontFamily: 'Roboto'}} domain={[0, 100]} stroke="white">
+                    <Label angle={-90} value='Popularity on Spotify' position='insideLeft' style={{textAnchor: 'middle', fontSize: '20px', fontFamily: 'Roboto', color: 'white', fontWeight: '100', letterSpacing: '5px'}} stroke="white" fill="white" />
                   </YAxis>
-                  <Legend formatter={legendTextCSSFunction} />
+                  <Legend formatter={legendTextCSSFunction} stroke="white" fill="white" />
                   {newSeries.map((s, idx) => (
                       <Line  strokeWidth={2} dataKey="popularity" stroke={strokeColours[idx]} activateDot={false} dot={false} data={s.data} name={s.albumName} key={s.albumId} />
                   ))}
