@@ -4,7 +4,9 @@ Tracks the popularity of a set of artists' albums over time and displays the dat
 
 Built using React, Recharts, Flask, PostgreSQL and Spotify API.
 
-Currently hosted on https://spotifypopularitytracker.herokuapp.com/
+Deployed using Heroku.
+
+Currently hosted on https://spotifypopularitytracker.herokuapp.com/ - Might take some time for page to load if website hasn't been accessed in a long time due to me having a free tier Heroku account.
 
 ## How to run
 
