@@ -30,4 +30,4 @@ Currently hosted on https://spotifypopularitytracker.herokuapp.com/ - Might take
 - Add something to use/analyze the data we create
 - Code a solution to the inevitable time where the amount of data will be too high for one network request. One solution could be to seperate the artists in their own page and network request.
 - Add a way for a user to add an artist to track
-- Add secret values to a .env file
+- Move secret values to a .env file
